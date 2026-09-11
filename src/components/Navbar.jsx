@@ -14,7 +14,7 @@ function Navbar() {
             Capabilities
           </a>
           <a
-            href="/resume.pdf"
+            href={`${import.meta.env.BASE_URL}resume.pdf`}
             target="_blank"
             rel="noreferrer"
           >

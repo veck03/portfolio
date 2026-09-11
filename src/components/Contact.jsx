@@ -29,10 +29,10 @@ function Contact() {
             </p>
 
             <a
-              href="mailto:your.email@example.com"
+              href="mailto:vansh.tomar.0306@gmail.com"
               className="email"
             >
-              your.email@example.com
+              vansh.tomar.0306@gmail.com
               <span>↗</span>
             </a>
           </div>
@@ -48,7 +48,7 @@ function Contact() {
           </a>
 
           <a
-            href="https://www.linkedin.com/"
+            href="https://www.linkedin.com/in/vansh-tomar03/"
             target="_blank"
             rel="noreferrer"
           >
@@ -56,7 +56,7 @@ function Contact() {
           </a>
 
           <a
-            href="/resume.pdf"
+            href={`${import.meta.env.BASE_URL}resume.pdf`}
             target="_blank"
             rel="noreferrer"
           >
