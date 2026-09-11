@@ -40,7 +40,7 @@ function Contact() {
 
         <div className="contact-links">
           <a
-            href="https://github.com/"
+            href="https://github.com/veck03"
             target="_blank"
             rel="noreferrer"
           >

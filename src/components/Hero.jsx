@@ -38,7 +38,7 @@ function Hero() {
               </a>
 
               <a
-                href="https://github.com/"
+                href="https://github.com/veck03"
                 target="_blank"
                 rel="noreferrer"
                 className="button"
