@@ -52,7 +52,7 @@ function Hero() {
           <aside className="hero-aside">
             <div className="portrait">
               <img
-                src="/profile.jpg"
+                src={`${import.meta.env.BASE_URL}profile.jpg`}
                 alt="Vansh Tomar"
               />
             </div>
