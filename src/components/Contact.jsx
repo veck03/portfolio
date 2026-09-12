@@ -56,7 +56,7 @@ function Contact() {
           </a>
 
           <a
-            href={`${import.meta.env.BASE_URL}resume.pdf`}
+            href={`${import.meta.env.BASE_URL}resume_2026.pdf`}
             target="_blank"
             rel="noreferrer"
           >
