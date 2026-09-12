@@ -4,11 +4,6 @@ function Hero() {
       <div className="container">
         <div className="hero-bar">
           <span>01 — Profile</span>
-
-          <span className="availability">
-            <span></span>
-            Available for opportunities
-          </span>
         </div>
 
         <div className="hero-grid">
