@@ -102,6 +102,42 @@ function ShoppingVisual() {
   );
 }
 
+
+function ResearchVisual() {
+  return (
+    <svg className="project-svg" viewBox="0 0 800 500" role="img" aria-label="Scientific research retrieval workflow visualization">
+      <rect width="800" height="500" fill="#e6e6e1" />
+      <rect x="70" y="90" width="190" height="105" rx="4" fill="#f7f7f4" stroke="#bdbdb7" />
+      <rect x="70" y="235" width="190" height="105" rx="4" fill="#f7f7f4" stroke="#bdbdb7" />
+      <rect x="335" y="160" width="150" height="105" rx="4" fill="#1b1b1b" />
+      <rect x="560" y="90" width="175" height="105" rx="4" fill="#f7f7f4" stroke="#bdbdb7" />
+      <rect x="560" y="235" width="175" height="105" rx="4" fill="#f7f7f4" stroke="#bdbdb7" />
+      <g fill="#777" fontFamily="monospace" fontSize="14">
+        <text x="92" y="125">Research papers</text>
+        <text x="92" y="270">Ocean data</text>
+        <text x="92" y="153" fontSize="10">BM25 + vector search</text>
+        <text x="92" y="298" fontSize="10">Structured datasets</text>
+        <text x="580" y="125">Reranking</text>
+        <text x="580" y="153" fontSize="10">Cross-encoder</text>
+        <text x="580" y="270">LLM response</text>
+        <text x="580" y="298" fontSize="10">Evidence-based answer</text>
+      </g>
+      <text x="360" y="205" fill="#fff" fontFamily="monospace" fontSize="13">QUERY</text>
+      <text x="350" y="230" fill="#bdbdb7" fontFamily="monospace" fontSize="10">ROUTER</text>
+      <g stroke="#858580" strokeWidth="2" fill="none">
+        <path d="M260 142 H300 V185 H335" />
+        <path d="M260 287 H300 V240 H335" />
+        <path d="M485 185 H520 V142 H560" />
+        <path d="M485 240 H520 V287 H560" />
+      </g>
+      <g fill="#858580">
+        <circle cx="300" cy="185" r="4" /><circle cx="300" cy="240" r="4" />
+        <circle cx="520" cy="142" r="4" /><circle cx="520" cy="287" r="4" />
+      </g>
+    </svg>
+  );
+}
+
 function HeatVisual() {
   const cells = Array.from({ length: 100 });
 
@@ -421,6 +457,9 @@ function FullStackVisual() {
 
 function ProjectVisual({ type }) {
   switch (type) {
+    case "research":
+      return <ResearchVisual />;
+
     case "shopping":
       return <ShoppingVisual />;
 

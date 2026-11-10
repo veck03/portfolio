@@ -1,16 +1,16 @@
-# React + Vite
+# Portfolio website update
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+This is an update package for the existing React + Vite portfolio. It retains the existing visual direction and updates the information architecture:
 
-Currently, two official plugins are available:
+1. Hero
+2. Featured Projects
+3. About
+4. Technical Skills
+5. Education
+6. Contact
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+There is no "Currently Exploring" section.
 
-## React Compiler
+The React app fetches `profile.json`, `education.json`, `skills.json`, and `projects.json` from the public `professional-profile` GitHub repository. See `PORTFOLIO_UPDATE_GUIDE.md` for setup instructions.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+The `data-example/` directory contains starter JSON files for the central repository. Verify project URLs and details before publishing.
