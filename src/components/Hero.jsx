@@ -4,7 +4,7 @@ function Hero({ profile }) {
     <section className="hero" id="top">
       <div className="container">
         <div className="hero-bar">
-          <span>01 — Profile</span><span className="availability"><span /> Open to relevant opportunities</span>
+          <span>01 — Profile</span>
         </div>
         <div className="hero-grid">
           <div className="hero-main">
@@ -14,7 +14,6 @@ function Hero({ profile }) {
             <p className="hero-summary">{profile.hero_summary || profile.summary}</p>
             <div className="hero-actions">
               <a href="#work" className="button button-primary">Explore projects <span>↓</span></a>
-              <a href={`${import.meta.env.BASE_URL}resume_2026.pdf`} target="_blank" rel="noreferrer" className="button">Download resume <span>↗</span></a>
               {github && <a href={github} target="_blank" rel="noreferrer" className="button">GitHub <span>↗</span></a>}
             </div>
           </div>
