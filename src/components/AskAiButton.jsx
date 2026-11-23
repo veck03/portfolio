@@ -1,25 +1,35 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useScroll } from "framer-motion";
 import "../styles/AskAi.css";
 
-// Pass onClick when the chat feature exists. It's a placeholder for now.
-export default function AskAiButton({ onClick }) {
+export default function AskAiButton({ open, onOpen }) {
   const { scrollY } = useScroll();
   const [visible, setVisible] = useState(false);
+  const btnRef = useRef(null);
+  const wasOpen = useRef(false);
 
+  // appears once the opening big-type frame has been scrolled past
   useEffect(() => {
     const update = () => setVisible(scrollY.get() > window.innerHeight * 0.7);
     update();
     return scrollY.on("change", update);
   }, [scrollY]);
 
+  // hand focus back to the button when the panel closes
+  useEffect(() => {
+    if (wasOpen.current && !open) btnRef.current?.focus();
+    wasOpen.current = open;
+  }, [open]);
+
   return (
     <AnimatePresence>
-      {visible && (
+      {visible && !open && (
         <motion.button
+          ref={btnRef}
           type="button"
           className="ask-ai"
-          onClick={onClick}
+          onClick={onOpen}
+          aria-haspopup="dialog"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 12 }}

@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import About, { AboutCopy } from "./components/About";
@@ -7,6 +7,7 @@ import Projects from "./components/Projects";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import AskAiButton from "./components/AskAiButton";
+import AskAiPanel from "./components/AskAiPanel";
 import PortraitLayer from "./components/PortraitLayer";
 import useTheme from "./hooks/useTheme";
 import usePortraitTransition from "./hooks/usePortraitTransition";
@@ -16,6 +17,7 @@ import "./styles/global.css";
 export default function App() {
   const { theme, toggleTheme } = useTheme();
   const transitionEnabled = usePortraitTransition();
+  const [chatOpen, setChatOpen] = useState(false);
 
   const wrapperRef = useRef(null);
   const coverSlotRef = useRef(null);
@@ -55,7 +57,9 @@ export default function App() {
       <Projects />
       <Contact />
       <Footer />
-      <AskAiButton />
+
+      <AskAiButton open={chatOpen} onOpen={() => setChatOpen(true)} />
+      <AskAiPanel open={chatOpen} onClose={() => setChatOpen(false)} />
     </>
   );
 }

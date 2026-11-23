@@ -1,0 +1,11 @@
+{
+  "name": "portfolio-chat-worker",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev --config ../wrangler.jsonc --port 8787",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.36.0"
+  }
+}

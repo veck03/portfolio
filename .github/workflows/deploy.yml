@@ -24,6 +24,7 @@ jobs:
     env:
       CI: "true"
       PROFILE_DIR: .profile-src
+      VITE_CHAT_URL: ${{ vars.VITE_CHAT_URL }}
     steps:
       - uses: actions/checkout@v4
 
@@ -39,7 +40,7 @@ jobs:
           cache: npm
 
       - run: npm ci
-      - run: npm run build   # prebuild syncs the profile data first
+      - run: npm run build   # prebuild syncs the profile data and builds knowledge.json
 
       - uses: actions/upload-pages-artifact@v3
         with:

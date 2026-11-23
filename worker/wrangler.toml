@@ -1,0 +1,26 @@
+name = "portfolio-chat"
+main = "../src/index.js"
+compatibility_date = "2025-09-01"
+
+[vars]
+GEMINI_MODEL = "gemini-3.5-flash-lite"
+# Sites allowed to call this Worker (comma-separated, no trailing slash, no path)
+ALLOWED_ORIGINS = "https://veck03.github.io,http://localhost:5173"
+# Where the Worker reads your profile text from (built by build-knowledge.mjs)
+KNOWLEDGE_URL = "https://veck03.github.io/portfolio/knowledge.json"
+
+# Per-visitor limit
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "1001"
+  [ratelimits.simple]
+  limit = 8
+  period = 60
+
+# Overall safety net
+[[ratelimits]]
+name = "GLOBAL_LIMITER"
+namespace_id = "1002"
+  [ratelimits.simple]
+  limit = 100
+  period = 60

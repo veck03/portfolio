@@ -1,5 +1,16 @@
 # React + Vite
 
+## Local chat development
+
+The site runs on Vite at `http://localhost:5173`; the chat API runs in Wrangler at
+`http://localhost:8787/chat`. Copy `.env.example` to `.env.local` for the Vite URL,
+then create a root `.dev.vars` file with `GEMINI_API_KEY=your-key` for Wrangler.
+Start the site with `npm run dev` and the API with
+`npx wrangler dev --config wrangler.jsonc --port 8787` from the repository root.
+If starting it from `worker/`, run `npm run dev` there; that script explicitly uses
+the root config. Keep the API key in `.dev.vars`; do not put it in
+`.env.local` or commit it.
+
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
 Currently, two official plugins are available:
