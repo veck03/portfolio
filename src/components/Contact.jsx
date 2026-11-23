@@ -54,7 +54,7 @@ export default function Contact() {
     }
   };
 
-  // No backend: opens the visitor's mail app with a pre-filled draft.
+  // No backend: hand the pre-filled message to the visitor's mail app.
   const onSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -62,11 +62,15 @@ export default function Contact() {
     const from = String(data.get("email") || "").trim();
     const message = String(data.get("message") || "").trim();
 
-    const subject = `Portfolio enquiry from ${name}`;
-    const body = `${message}\n\n— ${name}\n${from}`;
-    window.location.href =
-      `mailto:${CONTACT.email}?subject=${encodeURIComponent(subject)}` +
-      `&body=${encodeURIComponent(body)}`;
+    const mailto = new URL(`mailto:${CONTACT.email}`);
+    mailto.searchParams.set("subject", `Portfolio enquiry from ${name}`);
+    mailto.searchParams.set("body", `${message}\n\n— ${name}\n${from}`);
+
+    // Clicking a mailto anchor is more consistently handled by browsers than
+    // assigning window.location, and leaves the portfolio page in place.
+    const link = document.createElement("a");
+    link.href = mailto.toString();
+    link.click();
   };
 
   return (
