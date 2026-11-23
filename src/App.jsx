@@ -1,48 +1,61 @@
+import { useRef } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
+import About, { AboutCopy } from "./components/About";
+import TechStack from "./components/TechStack";
 import Projects from "./components/Projects";
-import About from "./components/About";
-import Skills from "./components/Skills";
-import Education from "./components/Education";
 import Contact from "./components/Contact";
-import { useProfileData } from "./hooks/useProfileData";
+import Footer from "./components/Footer";
+import AskAiButton from "./components/AskAiButton";
+import PortraitLayer from "./components/PortraitLayer";
+import useTheme from "./hooks/useTheme";
+import usePortraitTransition from "./hooks/usePortraitTransition";
+import { PORTRAIT, PROJECTS_ANCHOR } from "./config";
+import "./styles/global.css";
 
-function App() {
-  const { data, loading, error } = useProfileData();
+export default function App() {
+  const { theme, toggleTheme } = useTheme();
+  const transitionEnabled = usePortraitTransition();
 
-  if (loading) return <main className="data-state container" aria-live="polite"><p>Loading portfolio…</p></main>;
+  const wrapperRef = useRef(null);
+  const coverSlotRef = useRef(null);
+  const heroSlotRef = useRef(null);
+  const coverStageRef = useRef(null);
 
-  if (error || !data) {
-    return (
-      <main className="data-state container" role="alert">
-        <h1>Portfolio data couldn't be loaded.</h1>
-        <p>{error}</p>
-        <p>Check VITE_PROFILE_DATA_BASE_URL and confirm the professional-profile repository is public and its JSON files are on the main branch.</p>
-      </main>
-    );
-  }
-
-  const { profile, education, skills, projects } = data;
   return (
     <>
-      <Navbar profile={profile} />
-      <main>
-        <Hero profile={profile} />
-        <Projects projects={projects} />
-        <About profile={profile} />
-        <Skills skills={skills} />
-        <Education education={education.education} />
-        <Contact profile={profile} />
+      <Navbar theme={theme} onToggleTheme={toggleTheme} />
+
+      <main className="intro" ref={wrapperRef}>
+        <About
+          slotRef={coverSlotRef}
+          stageRef={coverStageRef}
+          staticPortrait={!transitionEnabled}
+          portrait={PORTRAIT}
+        />
+        <Hero
+          slotRef={heroSlotRef}
+          staticPortrait={!transitionEnabled}
+          portrait={PORTRAIT}
+          projectsHref={PROJECTS_ANCHOR}
+        />
+        <AboutCopy />
+        {transitionEnabled && (
+          <PortraitLayer
+            wrapperRef={wrapperRef}
+            coverSlotRef={coverSlotRef}
+            heroSlotRef={heroSlotRef}
+            stageRef={coverStageRef}
+            src={PORTRAIT.src}
+          />
+        )}
       </main>
-      <footer className="footer">
-        <div className="container footer-inner">
-          <span>{profile.name}</span>
-          <span>{profile.headline || "AI / ML"}</span>
-          <span>© {new Date().getFullYear()}</span>
-        </div>
-      </footer>
+
+      <TechStack />
+      <Projects />
+      <Contact />
+      <Footer />
+      <AskAiButton />
     </>
   );
 }
-
-export default App;

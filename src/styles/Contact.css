@@ -1,0 +1,167 @@
+.contact {
+  --field-line: #bebdb7;
+  padding: clamp(6rem, 16vh, 10rem) 0 clamp(5rem, 12vh, 9rem);
+}
+[data-theme="light"] .contact { --field-line: #5d5b55; }
+
+.contact__inner {
+  width: var(--content-w);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.94fr);
+  column-gap: clamp(2rem, 3.5vw, 5rem);
+  align-items: start;
+}
+
+/* ---------- left ---------- */
+.contact__title {
+  font-size: clamp(3.2rem, 5.7vw, 7.5rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+.contact__blurb {
+  margin-top: clamp(1.5rem, 2.3vw, 2.75rem);
+  max-width: 20em;
+  font-size: clamp(1.05rem, 1.15vw, 1.5rem);
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.contact__mail {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: clamp(2rem, 3vw, 3.5rem);
+}
+.contact__email {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: clamp(1.2rem, 1.4vw, 1.8rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.contact__email svg { transition: transform 0.25s ease; }
+.contact__email:hover svg { transform: translate(2px, -2px); }
+
+.contact__copy {
+  display: grid;
+  place-items: center;
+  width: clamp(2.8rem, 2.9vw, 3.5rem);
+  height: clamp(2.8rem, 2.9vw, 3.5rem);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+[data-theme="light"] .contact__copy { background: rgba(0, 0, 0, 0.03); }
+.contact__copy:hover { background: var(--border); }
+
+.contact__social {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.75rem;
+  margin-top: clamp(2.5rem, 3.6vw, 4.5rem);
+}
+.contact__social a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: clamp(0.9rem, 0.9vw, 1.1rem);
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.25s ease;
+}
+.contact__social a:hover { opacity: 0.7; }
+.contact__social svg { width: clamp(1.25rem, 1.25vw, 1.5rem); height: clamp(1.25rem, 1.25vw, 1.5rem); }
+
+/* ---------- form ---------- */
+.contact__form {
+  display: grid;
+  gap: clamp(2rem, 2.6vw, 3rem);
+  padding-top: 0.4rem;
+}
+.form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: clamp(1.25rem, 1.6vw, 2rem);
+}
+.field { display: grid; align-content: start; }
+.field__label {
+  font-size: clamp(0.9rem, 0.9vw, 1.1rem);
+  font-weight: 600;
+}
+.field__control {
+  width: 100%;
+  margin-top: 0.4rem;
+  padding: 1.2rem 0 0.9rem;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--field-line);
+  border-radius: 0;
+  color: var(--text);
+  font: inherit;
+  font-size: clamp(1.05rem, 1.15vw, 1.5rem);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.field__control::placeholder { color: var(--muted); }
+.field__control:focus {
+  outline: none;
+  border-bottom-color: var(--text);
+  box-shadow: 0 1px 0 0 var(--text);
+}
+textarea.field__control {
+  min-height: clamp(8rem, 9.5vw, 11.5rem);
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.contact__submit {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.5rem;
+  min-width: clamp(12rem, 14.5vw, 17.5rem);
+  padding: 1.45rem 1.75rem;
+  background: var(--inverse-bg);
+  color: var(--inverse-text);
+  border: 0;
+  border-radius: 3px;
+  font: inherit;
+  font-size: clamp(0.95rem, 1vw, 1.2rem);
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.contact__submit:hover { transform: translateY(-2px); opacity: 0.92; }
+.contact__submit svg { transition: transform 0.3s ease; }
+.contact__submit:hover svg { transform: translate(2px, -2px); }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 899px) {
+  .contact__inner { grid-template-columns: 1fr; row-gap: 3.5rem; width: calc(100% - 2.5rem); }
+  .contact__title { font-size: clamp(3.2rem, 15vw, 5rem); }
+  .contact__blurb { font-size: 1.1rem; }
+  .contact__email { font-size: 1.2rem; }
+}
+@media (max-width: 559px) {
+  .form__row { grid-template-columns: 1fr; row-gap: 2rem; }
+  .field__control { font-size: 1.05rem; }
+  .contact__submit { width: 100%; }
+}

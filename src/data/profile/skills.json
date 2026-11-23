@@ -1,0 +1,80 @@
+{
+  "schema_version": 2,
+  "programming": [
+    "Python",
+    "C++"
+  ],
+  "ai_ml": [
+    "Machine Learning",
+    "Neural Networks",
+    "Large Language Models",
+    "Retrieval-Augmented Generation",
+    "Agentic AI"
+  ],
+  "libraries_frameworks": [
+    "NumPy",
+    "Pandas",
+    "Scikit-learn",
+    "Sentence Transformers",
+    "ChromaDB",
+    "FastAPI",
+    "LangChain"
+  ],
+  "tools": [
+    "Git",
+    "GitHub",
+    "Jupyter Notebook",
+    "VS Code"
+  ],
+  "display_groups": [
+    {
+      "id": "ai-ml",
+      "title": "AI & Machine Learning",
+      "blurb": "LLMs, Retrieval and Agentic Systems",
+      "items": [
+        "Machine Learning",
+        "Neural Networks",
+        "Large Language Models",
+        "Retrieval-Augmented Generation",
+        "Agentic AI",
+        "Sentence Transformers",
+        "ChromaDB",
+        "LangChain"
+      ],
+      "highlight": [
+        "Retrieval-Augmented Generation",
+        "Agentic AI"
+      ]
+    },
+    {
+      "id": "languages-frameworks",
+      "title": "Languages & Frameworks",
+      "blurb": "Core Languages and Backend APIs",
+      "items": [
+        "Python",
+        "C++",
+        "FastAPI"
+      ],
+      "highlight": [
+        "Python"
+      ]
+    },
+    {
+      "id": "data-tools",
+      "title": "Data & Tools",
+      "blurb": "Data Processing, Experimentation and Version Control",
+      "items": [
+        "NumPy",
+        "Pandas",
+        "Scikit-learn",
+        "Jupyter Notebook",
+        "Git",
+        "GitHub",
+        "VS Code"
+      ],
+      "highlight": [
+        "Pandas"
+      ]
+    }
+  ]
+}

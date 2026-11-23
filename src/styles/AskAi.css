@@ -1,0 +1,22 @@
+.ask-ai {
+  position: fixed;
+  right: clamp(1rem, 2.35vw, 2.8rem);
+  bottom: clamp(1rem, 2.6vh, 1.75rem);
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.95rem 1.2rem;
+  border: 0;
+  border-radius: 1.1rem;
+  background: var(--inverse-bg);
+  color: var(--inverse-text);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+@media (max-width: 899px) {
+  .ask-ai { padding: 0.75rem 1rem; font-size: 0.9rem; gap: 0.5rem; border-radius: 0.9rem; }
+  .ask-ai svg { width: 20px; height: 20px; }
+}

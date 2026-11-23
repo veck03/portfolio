@@ -1,0 +1,287 @@
+.projects {
+  --f-back: #2d2d2a;
+  --f-front-top: rgba(255, 255, 255, 0.1);
+  --f-front-bottom: rgba(255, 255, 255, 0.035);
+  --f-line: rgba(255, 255, 255, 0.16);
+  --f-card: #161615;
+  --f-card-line: rgba(255, 255, 255, 0.1);
+  --f-skel: rgba(255, 255, 255, 0.07);
+  padding: clamp(6rem, 16vh, 10rem) 0 clamp(5rem, 12vh, 8rem);
+}
+[data-theme="light"] .projects {
+  --f-back: #dcdad2;
+  --f-front-top: rgba(0, 0, 0, 0.06);
+  --f-front-bottom: rgba(0, 0, 0, 0.02);
+  --f-line: rgba(0, 0, 0, 0.16);
+  --f-card: #fbfaf7;
+  --f-card-line: rgba(0, 0, 0, 0.1);
+  --f-skel: rgba(0, 0, 0, 0.07);
+}
+
+.projects__inner { width: var(--content-w); margin: 0 auto; }
+
+/* ---------- header ---------- */
+.projects__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+}
+.projects__title {
+  font-size: clamp(3.2rem, 5.2vw, 6.5rem);
+  font-weight: 500;
+  line-height: 0.97;
+  letter-spacing: -0.04em;
+}
+.projects__github {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding-bottom: 1.6rem;
+  text-decoration: none;
+  font-size: clamp(0.95rem, 0.95vw, 1.15rem);
+}
+.projects__github-icon {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  transition: background-color 0.25s ease;
+}
+.projects__github:hover .projects__github-icon { background: var(--border); }
+
+.projects__blurb {
+  margin-top: clamp(2rem, 3.2vw, 4rem);
+  max-width: 29em;
+  font-size: clamp(1.05rem, 1.1vw, 1.4rem);
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.projects__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: clamp(1rem, 1.5vw, 2rem);
+  row-gap: clamp(2rem, 3vw, 4rem);
+  margin-top: clamp(3rem, 5vw, 6rem);
+}
+
+/* ---------- folder ----------
+   Everything inside is sized in cqw (1cqw = 1% of the folder's own width),
+   so the folder scales as one piece at any column width. */
+.folder {
+  container-type: inline-size;
+  position: relative;
+  z-index: 0;
+  --p: 0; /* hover progress: 0 = closed, 1 = spread */
+}
+.folder:hover,
+.folder:focus-within { --p: 1; z-index: 3; }
+@media (hover: none) { .folder { --p: 0.85; } }
+
+.folder__stage { position: relative; height: 96cqw; }
+
+/* back panel with its tab */
+.folder__back {
+  position: absolute;
+  z-index: 0;
+  left: 2cqw;
+  right: 2cqw;
+  top: 25.5cqw;
+  bottom: 0;
+  border-radius: 3.5cqw 3.5cqw 0 0;
+  background: var(--f-back);
+}
+.folder__back::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -6cqw;
+  width: 40cqw;
+  height: 6.5cqw;
+  border-radius: 3.5cqw 3.5cqw 0 0;
+  background: var(--f-back);
+}
+
+/* cards: each has a closed pose (--x --y --r) and a spread pose (--hx --hy --hr) */
+.folder__card {
+  position: absolute;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--text);
+  border-radius: 3.6cqw;
+  background: var(--f-card);
+  border: 1px solid var(--f-card-line);
+  transform-origin: 50% 100%;
+  transform:
+    translate(
+      calc((var(--x) + (var(--hx) - var(--x)) * var(--p)) * 1cqw),
+      calc((var(--y) + (var(--hy) - var(--y)) * var(--p)) * 1cqw)
+    )
+    rotate(calc((var(--r) + (var(--hr) - var(--r)) * var(--p)) * 1deg));
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.folder__card--shot {
+  z-index: 1; left: 22cqw; top: 19.5cqw; width: 75cqw; height: 46cqw;
+  --x: 0; --y: 0; --r: 4; --hx: 7; --hy: -11; --hr: 8;
+}
+.folder__card--left {
+  z-index: 2; left: -1cqw; top: 30cqw; width: 64cqw; height: 44cqw;
+  --x: 0; --y: 0; --r: -6; --hx: -6; --hy: -9; --hr: -10;
+}
+.folder__card--mid {
+  z-index: 3; left: 11cqw; top: 32cqw; width: 76cqw; height: 44cqw;
+  --x: 0; --y: 0; --r: -1; --hx: 0; --hy: -16; --hr: 0;
+}
+
+.folder__card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.folder__icon {
+  position: absolute;
+  left: 5cqw;
+  top: 5cqw;
+  width: 6cqw;
+  height: 6cqw;
+}
+.folder__label {
+  position: absolute;
+  left: 5cqw;
+  top: 22cqw;
+  font-size: 4.1cqw;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+/* placeholder for a missing screenshot */
+.folder__skeleton {
+  position: absolute;
+  inset: 0;
+  padding: 4cqw;
+  display: grid;
+  align-content: start;
+  gap: 2.4cqw;
+}
+.folder__skeleton i {
+  display: block;
+  height: 2cqw;
+  border-radius: 0.8cqw;
+  background: var(--f-skel);
+}
+.folder__skeleton i:nth-child(1) { width: 30%; }
+.folder__skeleton i:nth-child(2) { width: 82%; }
+.folder__skeleton i:nth-child(3) { width: 64%; }
+.folder__skeleton i:nth-child(4) { width: 74%; }
+
+/* frosted front panel */
+.folder__front {
+  position: absolute;
+  z-index: 5;
+  left: 0;
+  bottom: 0;
+  width: 100cqw;
+  height: 58cqw;
+  clip-path: url(#folder-front-clip);
+  background: linear-gradient(180deg, var(--f-front-top), var(--f-front-bottom));
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  transform-origin: 50% 100%;
+  transform: translateY(calc(3.5cqw * var(--p))) scaleX(calc(1 + 0.012 * var(--p)));
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.folder__outline {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.folder__outline path {
+  fill: none;
+  stroke: var(--f-line);
+  stroke-width: 2; /* half is clipped away, leaving a 1px line */
+  vector-effect: non-scaling-stroke;
+}
+
+.folder__title {
+  position: absolute;
+  left: 8cqw;
+  right: 26cqw;
+  bottom: 9cqw;
+  font-size: 8.6cqw;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.folder__go {
+  position: absolute;
+  right: 8cqw;
+  bottom: 8cqw;
+  width: 12.5cqw;
+  height: 12.5cqw;
+  display: grid;
+  place-items: center;
+  border-radius: 2.6cqw;
+  background: var(--inverse-bg);
+  color: var(--inverse-text);
+  transition: transform 0.25s ease;
+}
+.folder__go svg { width: 5.2cqw; height: 5.2cqw; }
+.folder__go:hover { transform: scale(1.06); }
+
+/* caption row under the folder */
+.folder__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem 1rem;
+  padding: 0 0.35rem;
+  margin-top: clamp(1.25rem, 1.6vw, 2rem);
+}
+.folder__caption {
+  font-size: clamp(0.8rem, 0.9vw, 1.1rem);
+  line-height: 1.4;
+  color: var(--muted);
+}
+.folder__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: clamp(0.85rem, 0.9vw, 1.1rem);
+  font-weight: 600;
+  text-decoration: none;
+}
+.folder__link svg { transition: transform 0.25s ease; }
+.folder__link:hover svg { transform: translate(2px, -2px); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1099px) {
+  .projects__grid { grid-template-columns: repeat(2, 1fr); row-gap: 3rem; }
+}
+@media (max-width: 599px) {
+  .projects__head { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .projects__title { font-size: clamp(3rem, 13vw, 4.5rem); }
+  .projects__github { padding-bottom: 0; }
+  .projects__grid { grid-template-columns: 1fr; }
+}
+
+/* shown instead of the link when a project has no URL */
+.folder__tag {
+  font-size: clamp(0.75rem, 0.8vw, 0.95rem);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  white-space: nowrap;
+}

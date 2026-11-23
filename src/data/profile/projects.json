@@ -1,0 +1,122 @@
+{
+  "schema_version": 2,
+  "projects": [
+    {
+      "id": "scientific-research-assistant",
+      "title": "Agentic Scientific Research Assistant",
+      "tagline": "Agentic RAG for ocean science",
+      "category": "AI/ML",
+      "status": "completed",
+      "image": "research-assistant.webp",
+      "gallery": [],
+      "technologies": [
+        "Python",
+        "RAG",
+        "ChromaDB",
+        "Sentence Transformers",
+        "Groq API"
+      ],
+      "short_description": "An agentic research platform combining scientific paper retrieval with structured oceanographic data analysis.",
+      "resume_bullets": [
+        "Developed an agentic RAG system for scientific research, integrating retrieval from oceanographic research papers with structured oceanographic data.",
+        "Implemented BM25 and vector search with cross-encoder reranking to improve retrieval relevance.",
+        "Built an LLM-based query router using Groq API to direct queries to paper retrieval, dataset analysis, or combined workflows."
+      ],
+      "portfolio_description": "An AI-powered scientific research assistant that combines paper retrieval, semantic search, reranking, and structured dataset analysis.",
+      "links": {
+        "github": "https://github.com/veck03/Nerivane",
+        "live_demo": null
+      },
+      "featured": true,
+      "resume_priority": 1,
+      "portfolio_priority": 1
+    },
+    {
+      "id": "neural-network-from-scratch",
+      "title": "Neural Network from Scratch",
+      "tagline": "Deep learning from first principles",
+      "category": "Deep Learning",
+      "status": "completed",
+      "image": "neural-network-from-scratch.webp",
+      "gallery": [],
+      "technologies": [
+        "Python",
+        "NumPy"
+      ],
+      "short_description": "A neural network implemented from scratch to understand the mathematical foundations of deep learning.",
+      "resume_bullets": [
+        "Implemented a neural network from scratch in Python and NumPy to understand forward propagation and backpropagation.",
+        "Implemented weighted layers, activation functions, loss computation, gradient calculation, and parameter updates.",
+        "Trained and evaluated the model while analyzing learning behavior without relying on high-level deep learning frameworks."
+      ],
+      "portfolio_description": "A foundational deep learning project implementing neural network components and training mechanics using Python and NumPy.",
+      "links": {
+        "github": null,
+        "live_demo": null
+      },
+      "featured": true,
+      "resume_priority": 2,
+      "portfolio_priority": 2
+    },
+    {
+      "id": "urban-heat-mitigation",
+      "title": "Urban Heat Mitigation using AI/ML",
+      "tagline": "Satellite-driven urban heat analysis",
+      "category": "Geospatial AI/ML",
+      "status": "in_progress",
+      "image": "urban-heat-mitigation.webp",
+      "gallery": [],
+      "technologies": [
+        "Python",
+        "Google Earth Engine",
+        "Remote Sensing"
+      ],
+      "short_description": "An ML-based approach to analyze urban heat patterns in Delhi using satellite-derived environmental and urban features.",
+      "resume_bullets": [
+        "Developing an ML-based approach to analyze urban heat patterns in Delhi using satellite-derived environmental and urban features.",
+        "Processed Landsat and Sentinel-2 imagery to derive LST, NDVI, NDWI, EVI, and NDBI.",
+        "Engineered geospatial features including land cover, tree cover, population density, elevation, slope, and distance to water."
+      ],
+      "portfolio_description": "A geospatial AI/ML project analyzing urban heat patterns through satellite imagery, environmental indices, and engineered urban features.",
+      "links": {
+        "github": "https://github.com/veck03/urbivue",
+        "live_demo": null
+      },
+      "featured": true,
+      "resume_priority": 3,
+      "portfolio_priority": 3
+    },
+    {
+      "id": "bangalore-house-price-prediction",
+      "title": "Bangalore House Price Prediction",
+      "tagline": "Full-stack house price estimator",
+      "category": "AI/ML",
+      "status": "completed",
+      "image": "house-price-prediction.webp",
+      "gallery": [],
+      "technologies": [
+        "Python",
+        "Scikit-Learn",
+        "Linear Regression",
+        "Pandas",
+        "NumPy",
+        "FastAPI"
+      ],
+      "short_description": "A full-stack machine learning application that predicts Bangalore real estate prices using property attributes and a trained Linear Regression model.",
+      "resume_bullets": [
+        "Developed a full-stack machine learning application to estimate Bangalore property prices using a Scikit-Learn Linear Regression model trained on housing market data.",
+        "Built a decoupled REST API using Python and FastAPI to serve real-time predictions, integrating the trained model with a responsive frontend.",
+        "Implemented an interactive web interface using HTML, CSS, and JavaScript, enabling users to generate price estimates based on location, square footage, bedrooms, and bathrooms.",
+        "Deployed the frontend on Vercel and the backend API on Render, establishing an independent, cloud-hosted application architecture."
+      ],
+      "portfolio_description": "A full-stack real estate price prediction platform that estimates property values across Bangalore using machine learning. The application combines a Scikit-Learn Linear Regression model with a Python FastAPI backend and a responsive JavaScript frontend. Users can enter property details, including neighborhood, square footage, bedrooms, and bathrooms, to receive instant price estimates in Indian Lakhs (₹). The decoupled architecture separates frontend hosting on Vercel from backend inference on Render, enabling independent deployment and API-driven predictions.",
+      "links": {
+        "github": "https://github.com/veck03/Banglore_house_price_prediction",
+        "live_demo": "https://banglore-house-price-prediction-navy.vercel.app/"
+      },
+      "featured": false,
+      "resume_priority": 4,
+      "portfolio_priority": 4
+    }
+  ]
+}

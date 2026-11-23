@@ -1,10 +1,12 @@
-name: Deploy Portfolio
+name: Deploy portfolio
 
 on:
   push:
-    branches:
-      - main
-
+    branches: [main]
+  repository_dispatch:
+    types: [profile-updated]
+  schedule:
+    - cron: "0 3 * * *"
   workflow_dispatch:
 
 permissions:
@@ -17,37 +19,38 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      CI: "true"
+      PROFILE_DIR: .profile-src
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout profile data
+        uses: actions/checkout@v4
+        with:
+          repository: veck03/professional-profile
+          path: .profile-src
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build   # prebuild syncs the profile data first
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
   deploy:
+    needs: build
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
-    runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Setup Node
-        uses: actions/setup-node@v7
-        with:
-          node-version: lts/*
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Setup GitHub Pages
-        uses: actions/configure-pages@v6
-
-      - name: Upload build
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: ./dist
-
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v5
+      - id: deployment
+        uses: actions/deploy-pages@v4

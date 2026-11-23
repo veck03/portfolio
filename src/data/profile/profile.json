@@ -1,0 +1,33 @@
+{
+  "schema_version": 2,
+  "name": "Vansh Tomar",
+  "display_name": "Vansh",
+  "headline": "AI/ML Engineer",
+  "headline_long": "AI/ML Engineer & Software Developer",
+  "degree": "B.Tech. Mathematics and Computing",
+  "location": "Madhya Pradesh, India",
+  "email": "vansh.tomar.0306@gmail.com",
+  "links": {
+    "linkedin": "https://www.linkedin.com/in/vansh-tomar03",
+    "github": "https://github.com/veck03",
+    "portfolio": "https://veck03.github.io/portfolio/"
+  },
+  "avatar": {
+    "file": "avatar/portrait.jpg",
+    "alt": "Portrait of Vansh Tomar"
+  },
+  "interests": [
+    "Agentic AI",
+    "Deep Learning",
+    "Geospatial AI"
+  ],
+  "summary": "Mathematics and Computing undergraduate with hands-on project experience in machine learning, scientific data processing, and LLM-powered retrieval systems. Interested in developing practical AI solutions, with a particular focus on agentic AI, deep learning, and geospatial applications.",
+  "about": {
+    "one_liner": "Mathematics and Computing undergraduate building practical AI/ML projects.",
+    "short": "I’m Vansh, a Mathematics and Computing undergraduate at MITS. I build practical AI/ML projects across LLM-powered retrieval, deep learning and geospatial analysis.",
+    "cta": {
+      "label": "More about me",
+      "url": "https://veck03.github.io/portfolio/"
+    }
+  }
+}

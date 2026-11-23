@@ -1,0 +1,98 @@
+.stack {
+  --chip-bg: #1e1e1e;
+  --step: clamp(2rem, 4.2vw, 5rem); /* vertical stagger between columns */
+  padding: clamp(6rem, 16vh, 10rem) 0 clamp(5rem, 12vh, 8rem);
+}
+[data-theme="light"] .stack { --chip-bg: #ecebe6; }
+
+.stack__inner { width: var(--content-w); margin: 0 auto; }
+
+.stack__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: clamp(3rem, 5vw, 6rem);
+}
+
+.stack__title {
+  font-size: clamp(3.2rem, 5.5vw, 7rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.stack__tagline {
+  max-width: 9em;
+  margin-top: 0.5em;
+  font-size: clamp(1rem, 1.25vw, 1.6rem);
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.stack__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: clamp(1.5rem, 2.6vw, 3.5rem);
+  align-items: start;
+}
+.stack__col:nth-child(2) { margin-top: var(--step); }
+.stack__col:nth-child(3) { margin-top: calc(var(--step) * 2); }
+
+.stack__col { border-top: 2px solid var(--text); padding-top: clamp(1.5rem, 1.9vw, 2.25rem); }
+
+.stack__col-title {
+  font-size: clamp(1.6rem, 2.3vw, 3rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.stack__col-blurb {
+  margin-top: clamp(1rem, 1.5vw, 1.75rem);
+  max-width: 24em;
+  font-size: clamp(0.85rem, 0.9vw, 1.1rem);
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.stack__chips {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: clamp(1.5rem, 2.1vw, 2.5rem);
+}
+
+.chip {
+  padding: 0.8em 0.85em;
+  background: var(--chip-bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-size: clamp(0.95rem, 1.15vw, 1.4rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  transition: border-color 0.25s ease;
+}
+.chip:hover { border-color: var(--muted); }
+
+.chip--featured {
+  background: var(--inverse-bg);
+  color: var(--inverse-text);
+  border-color: var(--inverse-bg);
+}
+
+@media (max-width: 899px) {
+  .stack__head { flex-direction: column; gap: 1rem; }
+  .stack__title { font-size: clamp(3rem, 13vw, 4.5rem); }
+  .stack__tagline { max-width: none; margin-top: 0; }
+
+  .stack__grid { grid-template-columns: 1fr; row-gap: 3rem; }
+  .stack__col:nth-child(2),
+  .stack__col:nth-child(3) { margin-top: 0; }
+
+  .stack__col-title { font-size: 1.75rem; }
+  .stack__col-blurb { font-size: 0.95rem; }
+  .chip { font-size: 1rem; }
+}
