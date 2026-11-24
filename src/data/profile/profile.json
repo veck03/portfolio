@@ -16,6 +16,9 @@
     "file": "avatar/portrait.jpg",
     "alt": "Portrait of Vansh Tomar"
   },
+  "resume": {
+    "file": "resume/Vansh-Tomar-Resume.pdf"
+  },
   "interests": [
     "Agentic AI",
     "Deep Learning",

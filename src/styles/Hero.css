@@ -104,3 +104,26 @@
   .hero__portrait-col { max-width: 28rem; }
   .hero__ask { display: none; }
 }
+
+.hero__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.25rem 1.75rem;
+  margin-top: clamp(1.5rem, 2vw, 2.5rem);
+}
+.hero__actions .btn { margin-top: 0; }
+
+.hero__resume {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 0.15rem;
+  font-size: clamp(0.95rem, 1.05vw, 1.25rem);
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+.hero__resume:hover { color: var(--text); border-bottom-color: var(--text); }

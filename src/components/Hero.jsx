@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { PortraitImage } from "./PortraitLayer";
 import { PROFILE, CURRENT_EDUCATION } from "../data/profileData";
+import { RESUME_URL, RESUME_FILENAME } from "../config";
 import "../styles/Hero.css";
 
 const EASE = [0.22, 1, 0.36, 1];
@@ -64,12 +65,23 @@ export default function Hero({ slotRef, staticPortrait, portrait, projectsHref }
             <strong>RAG pipelines</strong>, and explore <strong>machine learning</strong>{" "}
             to solve real-world problems.
           </motion.p>
-          <motion.a className="btn" href={projectsHref} variants={item}>
-            Explore Projects
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M4 12L12 4M5.5 4H12v6.5" />
-            </svg>
-          </motion.a>
+
+          <motion.div className="hero__actions" variants={item}>
+            <a className="btn" href={projectsHref}>
+              Explore Projects
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M4 12L12 4M5.5 4H12v6.5" />
+              </svg>
+            </a>
+            {RESUME_URL && (
+              <a className="hero__resume" href={RESUME_URL} download={RESUME_FILENAME}>
+                Resume
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M8 2.5v8M4.5 7.5L8 11l3.5-3.5M3 13.5h10" />
+                </svg>
+              </a>
+            )}
+          </motion.div>
         </div>
       </motion.div>
     </section>

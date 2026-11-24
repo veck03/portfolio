@@ -1,13 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { CONTACT } from "../data/contact";
+import { RESUME_URL, RESUME_FILENAME } from "../config";
 import "../styles/Navbar.css";
 
-const LINKS = [
+const PAGES = [
   { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
+  { label: "About", href: "#hero" },
   { label: "Tech Stack", href: "#stack" },
   { label: "Projects", href: "#projects" },
   { label: "Contact", href: "#contact" },
+];
+
+const CONNECT = [
+  { label: "Email", href: `mailto:${CONTACT.email}`, newTab: false },
+  ...CONTACT.socials.map((s) => ({ label: s.label, href: s.href, newTab: true })),
 ];
 
 const SunIcon = () => (
@@ -23,9 +30,22 @@ const MoonIcon = () => (
   </svg>
 );
 
+const ArrowIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M4 12L12 4M5.5 4H12v6.5" />
+  </svg>
+);
+
+const DownloadIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M8 2.5v8M4.5 7.5L8 11l3.5-3.5M3 13.5h10" />
+  </svg>
+);
+
 export default function Navbar({ theme, onToggleTheme }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
+  const close = () => setOpen(false);
 
   useEffect(() => {
     if (!open) return;
@@ -75,7 +95,7 @@ export default function Navbar({ theme, onToggleTheme }) {
 
       <AnimatePresence>
         {open && (
-          <motion.ul
+          <motion.div
             id="nav-menu"
             className="nav__dropdown"
             initial={{ opacity: 0, y: -6 }}
@@ -83,12 +103,43 @@ export default function Navbar({ theme, onToggleTheme }) {
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.2 }}
           >
-            {LINKS.map((l) => (
-              <li key={l.href}>
-                <a href={l.href} onClick={() => setOpen(false)}>{l.label}</a>
-              </li>
-            ))}
-          </motion.ul>
+            <div className="nav__col">
+              <p className="nav__label">Pages</p>
+              <ul className="nav__list" aria-label="Pages">
+                {PAGES.map((l) => (
+                  <li key={l.href}>
+                    <a className="nav__link" href={l.href} onClick={close}>{l.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="nav__col">
+              <p className="nav__label">Connect</p>
+              <ul className="nav__list" aria-label="Contact links">
+                {CONNECT.map((l) => (
+                  <li key={l.label}>
+                    <a
+                      className="nav__link"
+                      href={l.href}
+                      onClick={close}
+                      {...(l.newTab ? { target: "_blank", rel: "noreferrer" } : {})}
+                    >
+                      {l.label}
+                      <ArrowIcon />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+
+              {RESUME_URL && (
+                <a className="nav__resume" href={RESUME_URL} download={RESUME_FILENAME} onClick={close}>
+                  Download resume
+                  <DownloadIcon />
+                </a>
+              )}
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </header>

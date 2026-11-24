@@ -1,5 +1,6 @@
 import { CONTACT, FOOTER } from "../data/contact";
 import { PROFILE } from "../data/profileData";
+import { RESUME_URL, RESUME_FILENAME } from "../config";
 import "../styles/Footer.css";
 
 function Arrow({ size = 14 }) {
@@ -26,6 +27,11 @@ export default function Footer() {
               {FOOTER.links.map((l) => (
                 <li key={l.href}><a href={l.href}>{l.label}</a></li>
               ))}
+              {RESUME_URL && (
+                <li>
+                  <a href={RESUME_URL} download={RESUME_FILENAME}>Resume</a>
+                </li>
+              )}
             </ul>
           </nav>
 

@@ -1,5 +1,6 @@
 .nav {
-  --nav-bg: #171717; /* darker than the page background (#1a1a1a) */
+  --nav-bg: #171717; /* darker than the page background */
+  --menu-w: min(34rem, calc(100vw - 2rem));
 
   position: fixed;
   top: clamp(1rem, 3.5vh, 2.4rem);
@@ -54,23 +55,70 @@
 .nav__menu:hover { opacity: 0.88; }
 .nav__menu:active { transform: scale(0.97); }
 
+/* ---------- two-column menu, centered under the pill ---------- */
 .nav__dropdown {
   position: absolute;
   top: calc(100% + 0.45rem);
-  left: 0;
-  right: 0;
-  list-style: none;
-  padding: 0.35rem;
+  left: calc(50% - var(--menu-w) / 2);
+  width: var(--menu-w);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 1rem;
+  padding: 0.8rem;
   background: var(--nav-bg);
-  border-radius: 0.85rem;
+  border-radius: 1rem;
 }
-.nav__dropdown a {
-  display: block;
-  padding: 0.7rem 0.9rem;
+
+.nav__col { display: flex; flex-direction: column; gap: 0.75rem; }
+.nav__col + .nav__col { border-left: 1px solid var(--border); padding-left: 1rem; }
+
+.nav__label {
+  padding: 0.2rem 0.7rem 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.nav__list { list-style: none; display: flex; flex-direction: column; }
+
+.nav__link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.6rem 0.7rem;
   border-radius: 0.5rem;
   text-decoration: none;
-  font-weight: 500;
   font-size: 0.95rem;
+  font-weight: 500;
   transition: background-color 0.2s ease;
 }
-.nav__dropdown a:hover { background: var(--border); }
+.nav__link:hover { background: var(--border); }
+.nav__link svg { color: var(--muted); flex: none; }
+
+.nav__resume {
+  margin-top: auto; /* sits at the bottom of the right column */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.75rem 0.85rem;
+  background: var(--inverse-bg);
+  color: var(--inverse-text);
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.nav__resume:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* narrow phones: stack the columns */
+@media (max-width: 479px) {
+  .nav__dropdown { grid-template-columns: 1fr; row-gap: 0.6rem; }
+  .nav__col + .nav__col {
+    border-left: 0;
+    padding-left: 0;
+    border-top: 1px solid var(--border);
+    padding-top: 0.6rem;
+  }
+}

@@ -63,6 +63,8 @@ async function loadRemote() {
       const wanted = new Set();
       const avatar = data["profile.json"].avatar?.file;
       if (avatar) wanted.add(avatar);
+      const resume = data["profile.json"].resume?.file;
+      if (resume) wanted.add(resume);
       for (const p of data["projects.json"].projects || []) {
         [p.image, ...(p.gallery || [])].filter(Boolean).forEach((f) => wanted.add(`projects/${f}`));
       }
