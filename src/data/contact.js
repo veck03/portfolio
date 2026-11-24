@@ -17,7 +17,7 @@ export const FOOTER = {
   closing: "See you around.",
   links: [
     { label: "Home", href: "#home" },
-    { label: "About", href: "#about" },
+    { label: "About", href: "#hero" },
     { label: "Tech Stack", href: "#stack" },
     { label: "Projects", href: "#projects" },
     { label: "Contact", href: "#contact" },

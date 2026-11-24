@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { PROJECTS, PROJECTS_SECTION } from "../data/projects";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { PROJECTS, PROJECTS_SECTION, CASE_STUDY_IDS, getProjectDetail } from "../data/projects";
+import CaseStudy from "./CaseStudy";
 import "../styles/Projects.css";
 
 const EASE = [0.22, 1, 0.36, 1];
 
 // Folder front outline in a 100 x 58 box (units = % of the folder's width).
-// Tab on the upper left, rounded body below it.
 const FRONT_PATH =
   "M0 52V3.5A3.5 3.5 0 0 1 3.5 0H41C44.5 0 45 6 49 6H94A6 6 0 0 1 100 12V52A6 6 0 0 1 94 58H6A6 6 0 0 1 0 52Z";
 
@@ -19,6 +19,11 @@ const makeFade = (reduce) => (delay = 0) =>
         viewport: { once: true, amount: 0.2 },
         transition: { duration: 0.8, delay, ease: EASE },
       };
+
+const parseHash = () => {
+  const id = new URLSearchParams(window.location.hash.slice(1)).get("project");
+  return id && CASE_STUDY_IDS.includes(id) ? id : null;
+};
 
 function Arrow({ size = 16 }) {
   return (
@@ -67,10 +72,23 @@ function Card({ variant, image, label }) {
   );
 }
 
-function Folder({ project, fade }) {
-  const { title, caption, category, cta, href, images = [] } = project;
+function Folder({ project, fade, active, onOpen }) {
+  const { id, title, caption, category, cta, href, hasCaseStudy, images = [] } = project;
+
+  const onArticleClick = hasCaseStudy
+    ? (e) => {
+        // buttons and links handle their own clicks
+        if (!e.target.closest("a, button")) onOpen(id);
+      }
+    : undefined;
+
   return (
-    <motion.article className="folder" {...fade}>
+    <motion.article
+      className={`folder${hasCaseStudy ? " folder--clickable" : ""}${active ? " folder--active" : ""}`}
+      data-folder={id}
+      onClick={onArticleClick}
+      {...fade}
+    >
       <div className="folder__stage">
         <div className="folder__back" aria-hidden="true" />
         <Card variant="shot" image={images[0]} />
@@ -82,17 +100,36 @@ function Folder({ project, fade }) {
             <path d={FRONT_PATH} />
           </svg>
           <h3 className="folder__title">{title}</h3>
-          {href && (
-            <a className="folder__go" href={href} target="_blank" rel="noreferrer" aria-label={`${cta}: ${title}`}>
+
+          {hasCaseStudy ? (
+            <button
+              type="button"
+              className="folder__go"
+              onClick={() => onOpen(id)}
+              aria-label={`Read case study: ${title}`}
+              aria-expanded={active}
+              aria-controls="case-study"
+            >
               <Arrow size={18} />
-            </a>
+            </button>
+          ) : (
+            href && (
+              <a className="folder__go" href={href} target="_blank" rel="noreferrer" aria-label={`${cta}: ${title}`}>
+                <Arrow size={18} />
+              </a>
+            )
           )}
         </div>
       </div>
 
       <div className="folder__meta">
         <p className="folder__caption">{caption}</p>
-        {href ? (
+        {hasCaseStudy ? (
+          <button type="button" className="folder__link" onClick={() => onOpen(id)}>
+            Read case study
+            <Arrow size={14} />
+          </button>
+        ) : href ? (
           <a className="folder__link" href={href} target="_blank" rel="noreferrer">
             {cta}
             <Arrow size={14} />
@@ -106,40 +143,152 @@ function Folder({ project, fade }) {
 }
 
 export default function Projects() {
-  const fade = makeFade(useReducedMotion());
+  const reduce = useReducedMotion();
+  const fade = makeFade(reduce);
+
+  const [selected, setSelected] = useState(null);
+  const selectedRef = useRef(null);
+  selectedRef.current = selected;
+
+  const gridRef = useRef(null);
+  const detailRef = useRef(null);
+  const closeTimer = useRef(null);
+  const scrollPlan = useRef(null); // null, or how long to wait before scrolling (ms)
+  const api = useRef({});
+
+  const scrollToDetail = () =>
+    detailRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+
+  const open = (id, { push = true, scroll = true, delay = 80 } = {}) => {
+    if (!CASE_STUDY_IDS.includes(id)) return;
+    window.clearTimeout(closeTimer.current);
+    if (push && parseHash() !== id) window.history.pushState(null, "", `#project=${id}`);
+
+    if (id === selectedRef.current) {
+      if (push) close();
+      else if (scroll) scrollToDetail();
+      return;
+    }
+    // swapping projects waits for the old page to fade out first
+    scrollPlan.current = scroll ? (selectedRef.current ? 400 : delay) : null;
+    setSelected(id);
+  };
+
+  const close = () => {
+    const id = selectedRef.current;
+    if (!id) return;
+    window.history.pushState(null, "", "#projects");
+
+    if (gridRef.current) {
+      const top = gridRef.current.getBoundingClientRect().top + window.scrollY - 150;
+      window.scrollTo({ top: Math.max(0, top), behavior: reduce ? "auto" : "smooth" });
+    }
+    // remove the section only after we've scrolled back up, so the page doesn't jump
+    window.clearTimeout(closeTimer.current);
+    closeTimer.current = window.setTimeout(
+      () => {
+        setSelected(null);
+        document.querySelector(`[data-folder="${id}"] .folder__go`)?.focus({ preventScroll: true });
+      },
+      reduce ? 0 : 650
+    );
+  };
+
+  api.current = { open, close };
+
+  // after a project is shown, scroll to it and move focus there
+  useEffect(() => {
+    if (!selected || scrollPlan.current === null) return;
+    const t = window.setTimeout(() => {
+      scrollPlan.current = null;
+      scrollToDetail();
+      detailRef.current?.focus({ preventScroll: true });
+    }, scrollPlan.current);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected]);
+
+  // deep link on load, and the browser's Back / Forward buttons
+  useEffect(() => {
+    const id = parseHash();
+    if (id) api.current.open(id, { push: false, delay: 450 });
+
+    const onPop = () => {
+      const next = parseHash();
+      if (next) {
+        api.current.open(next, { push: false });
+      } else {
+        window.clearTimeout(closeTimer.current);
+        setSelected(null);
+      }
+    };
+    window.addEventListener("popstate", onPop);
+    return () => {
+      window.removeEventListener("popstate", onPop);
+      window.clearTimeout(closeTimer.current);
+    };
+  }, []);
+
+  const detail = selected ? getProjectDetail(selected) : null;
+  const nextId =
+    selected && CASE_STUDY_IDS.length > 1
+      ? CASE_STUDY_IDS[(CASE_STUDY_IDS.indexOf(selected) + 1) % CASE_STUDY_IDS.length]
+      : null;
+  const nextTitle = nextId ? PROJECTS.find((p) => p.id === nextId)?.title : null;
 
   return (
-    <section id="projects" className="projects" aria-labelledby="projects-title">
-      {/* Clip shape for the folder fronts (defined once, used by CSS). */}
-      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true" focusable="false">
-        <defs>
-          <clipPath id="folder-front-clip" clipPathUnits="objectBoundingBox">
-            <path transform="scale(0.01 0.017241)" d={FRONT_PATH} />
-          </clipPath>
-        </defs>
-      </svg>
+    <>
+      <section id="projects" className="projects" aria-labelledby="projects-title">
+        {/* Clip shape for the folder fronts (defined once, used by CSS). */}
+        <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true" focusable="false">
+          <defs>
+            <clipPath id="folder-front-clip" clipPathUnits="objectBoundingBox">
+              <path transform="scale(0.01 0.017241)" d={FRONT_PATH} />
+            </clipPath>
+          </defs>
+        </svg>
 
-      <div className="projects__inner">
-        <header className="projects__head">
-          <motion.h2 id="projects-title" className="projects__title" {...fade(0)}>
-            Featured<br />Projects
-          </motion.h2>
-          <a className="projects__github" href={PROJECTS_SECTION.githubUrl} target="_blank" rel="noreferrer">
-            GitHub
-            <span className="projects__github-icon"><Arrow size={14} /></span>
-          </a>
-        </header>
+        <div className="projects__inner">
+          <header className="projects__head">
+            <motion.h2 id="projects-title" className="projects__title" {...fade(0)}>
+              Featured<br />Projects
+            </motion.h2>
+            <a className="projects__github" href={PROJECTS_SECTION.githubUrl} target="_blank" rel="noreferrer">
+              GitHub
+              <span className="projects__github-icon"><Arrow size={14} /></span>
+            </a>
+          </header>
 
-        <motion.p className="projects__blurb" {...fade(0.08)}>
-          {PROJECTS_SECTION.blurb}
-        </motion.p>
+          <motion.p className="projects__blurb" {...fade(0.08)}>
+            {PROJECTS_SECTION.blurb}
+          </motion.p>
 
-        <div className="projects__grid">
-          {PROJECTS.map((project, i) => (
-            <Folder key={project.id} project={project} fade={fade(0.1 + i * 0.1)} />
-          ))}
+          <div className="projects__grid" ref={gridRef}>
+            {PROJECTS.map((project, i) => (
+              <Folder
+                key={project.id}
+                project={project}
+                fade={fade(0.1 + i * 0.1)}
+                active={selected === project.id}
+                onOpen={open}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <AnimatePresence mode="wait">
+        {detail && (
+          <CaseStudy
+            key={detail.id}
+            detail={detail}
+            innerRef={detailRef}
+            onClose={close}
+            onNext={nextId ? () => open(nextId) : null}
+            nextTitle={nextTitle}
+          />
+        )}
+      </AnimatePresence>
+    </>
   );
 }

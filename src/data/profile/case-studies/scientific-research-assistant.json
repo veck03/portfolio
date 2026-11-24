@@ -1,0 +1,198 @@
+{
+  "schema_version": 2,
+  "label": "Project details",
+  "summary": "An agentic research assistant that answers questions about ocean and climate research papers using hybrid retrieval, reranking, and citation-grounded generation. It also supports numerical queries over a structured oceanographic dataset.",
+  "stack": [
+    "Python",
+    "Groq API (Qwen)",
+    "Sentence Transformers",
+    "ChromaDB",
+    "BM25",
+    "Cross-encoder",
+    "pandas",
+    "FastAPI",
+    "React + Vite"
+  ],
+  "facts": [],
+  "images": [
+    {
+      "file": "scientific-research-assistant/home.jpg",
+      "alt": "User Interface",
+      "caption": "Nerivane home page"
+    },
+    {
+      "file": "scientific-research-assistant/ui.webp",
+      "alt": "Answer view with sources",
+      "caption": "Answers with paper and page references"
+    },
+    {
+      "file": "scientific-research-assistant/data.webp",
+      "alt": "Data query result"
+    }
+  ],
+  "note": null,
+  "sections": [
+    {
+      "type": "text",
+      "title": "The challenge",
+      "body": [
+        "Scientific research often means searching across many papers, finding the passages that matter, and combining them with numbers from datasets.",
+        "This project explores an assistant that automates part of that workflow. It decides where to look, retrieves and ranks the evidence, and answers with references to its sources."
+      ]
+    },
+    {
+      "type": "flow",
+      "title": "How a question is answered",
+      "tabs": [
+        {
+          "label": "Paper question",
+          "steps": [
+            {
+              "title": "Query router",
+              "subtitle": "Groq API classifies the question as PAPER, DATA or BOTH"
+            },
+            {
+              "title": "Hybrid retrieval",
+              "subtitle": "Vector search plus BM25, merged with Reciprocal Rank Fusion"
+            },
+            {
+              "title": "Cross-encoder reranking",
+              "subtitle": "Reorders passages by relevance to the query"
+            },
+            {
+              "title": "Grounded answer",
+              "subtitle": "Generated from the evidence, with paper and page references"
+            }
+          ]
+        },
+        {
+          "label": "Data question",
+          "steps": [
+            {
+              "title": "Query router",
+              "subtitle": "Routes numerical questions to the data tool"
+            },
+            {
+              "title": "Ocean data tool",
+              "subtitle": "pandas queries over a sample oceanographic dataset"
+            },
+            {
+              "title": "Answer",
+              "subtitle": "Built from the data results"
+            }
+          ]
+        },
+        {
+          "label": "Both",
+          "steps": [
+            {
+              "title": "Query router",
+              "subtitle": "Sends the question down both paths"
+            },
+            {
+              "title": "Paper retrieval and data tool",
+              "subtitle": "Evidence and data results are gathered together"
+            },
+            {
+              "title": "Answer with sources",
+              "subtitle": "One response that combines both"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "steps",
+      "title": "The retrieval pipeline",
+      "steps": [
+        {
+          "title": "Document ingestion",
+          "text": "Research PDFs are extracted and processed into text."
+        },
+        {
+          "title": "Chunking",
+          "text": "Text is divided into overlapping chunks that keep paper and page metadata."
+        },
+        {
+          "title": "Dense retrieval",
+          "text": "Sentence-transformer embeddings retrieve semantically relevant passages from ChromaDB."
+        },
+        {
+          "title": "Keyword retrieval",
+          "text": "BM25 finds passages that match important terms in the query."
+        },
+        {
+          "title": "Hybrid fusion",
+          "text": "Reciprocal Rank Fusion combines the dense and keyword rankings."
+        },
+        {
+          "title": "Reranking",
+          "text": "A cross-encoder scores the candidates and selects the most relevant evidence."
+        },
+        {
+          "title": "Answer generation",
+          "text": "The language model writes a response from the selected evidence, with citations."
+        }
+      ]
+    },
+    {
+      "type": "metrics",
+      "title": "Evaluation",
+      "items": [
+        {
+          "value": "100%",
+          "label": "Route accuracy"
+        },
+        {
+          "value": "73 / 73",
+          "label": "Valid citations"
+        },
+        {
+          "value": "83.3%",
+          "label": "Retrieval Hit@1"
+        },
+        {
+          "value": "100%",
+          "label": "Retrieval Hit@3"
+        },
+        {
+          "value": "0.917",
+          "label": "Mean reciprocal rank"
+        },
+        {
+          "value": "2 / 2",
+          "label": "Data answers correct"
+        },
+        {
+          "value": "8.98 s",
+          "label": "Average latency"
+        },
+        {
+          "value": "11 / 11",
+          "label": "Test cases completed"
+        }
+      ],
+      "note": "Measured on a set of 11 test cases. These results reflect the current evaluation set and test environment, and are not guarantees for arbitrary research questions or larger datasets."
+    },
+    {
+      "type": "text",
+      "title": "Research corpus and data",
+      "body": [
+        "The corpus focuses on ocean science, ENSO dynamics, ocean prediction and sea-surface temperature modeling.",
+        "The data tool runs over a small sample dataset with date, latitude, longitude, depth, temperature and salinity fields. It demonstrates the data-querying workflow and is not a comprehensive observational dataset."
+      ]
+    },
+    {
+      "type": "list",
+      "title": "What's next",
+      "items": [
+        "Expand the research corpus and evaluate retrieval on a larger, more diverse set of questions.",
+        "Improve latency and measure the contribution of each pipeline stage.",
+        "Add more robust answer-quality and faithfulness evaluation.",
+        "Improve handling of conflicting evidence across papers.",
+        "Deploy the frontend and backend for public access.",
+        "Add user-facing source inspection and richer research workflows."
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /*
   Builds public/knowledge.json: a compact text version of the profile data
-  that the chat Worker reads. Runs after sync-profile.mjs.
+  (including case studies) that the chat Worker reads. Runs after sync-profile.mjs.
 */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
@@ -12,6 +12,13 @@ const DATA = join(ROOT, "src", "data", "profile");
 const OUT = join(ROOT, "public", "knowledge.json");
 
 const read = (f) => JSON.parse(readFileSync(join(DATA, f), "utf8"));
+const readCaseStudy = (id) => {
+  try {
+    return JSON.parse(readFileSync(join(DATA, "case-studies", `${id}.json`), "utf8"));
+  } catch {
+    return null;
+  }
+};
 
 const profile = read("profile.json");
 const education = read("education.json").education;
@@ -21,6 +28,38 @@ const projects = [...read("projects.json").projects].sort(
 );
 
 const list = (arr) => (arr || []).join(", ");
+
+function sectionLines(s) {
+  const pad = "     ";
+  const lines = [];
+  if (s.title) lines.push(`   ${s.title}:`);
+  switch (s.type) {
+    case "text":
+      (s.body || []).forEach((t) => lines.push(`${pad}${t}`));
+      break;
+    case "list":
+      (s.items || []).forEach((t) => lines.push(`${pad}- ${t}`));
+      break;
+    case "steps":
+      (s.steps || []).forEach((st, i) =>
+        lines.push(`${pad}${i + 1}. ${st.title}${st.text ? `: ${st.text}` : ""}`)
+      );
+      break;
+    case "metrics":
+      (s.items || []).forEach((m) => lines.push(`${pad}- ${m.label}: ${m.value}`));
+      if (s.note) lines.push(`${pad}Note: ${s.note}`);
+      break;
+    case "flow":
+      (s.tabs || []).forEach((t) =>
+        lines.push(`${pad}${t.label}: ${(t.steps || []).map((st) => st.title).join(" -> ")}`)
+      );
+      break;
+    default:
+      break;
+  }
+  return lines;
+}
+
 const out = [];
 
 out.push("ABOUT");
@@ -58,6 +97,16 @@ projects.forEach((p, i) => {
   (p.resume_bullets || []).forEach((b) => out.push(`   - ${b}`));
   if (p.links?.github) out.push(`   GitHub: ${p.links.github}`);
   if (p.links?.live_demo) out.push(`   Live demo: ${p.links.live_demo}`);
+
+  const cs = readCaseStudy(p.id);
+  if (cs) {
+    out.push("   CASE STUDY");
+    if (cs.summary) out.push(`   ${cs.summary}`);
+    if (cs.stack?.length) out.push(`   Full stack: ${list(cs.stack)}`);
+    (cs.facts || []).forEach((f) => out.push(`   ${f.label}: ${f.value}`));
+    (cs.sections || []).forEach((s) => out.push(...sectionLines(s)));
+    if (cs.note) out.push(`   Note: ${cs.note}`);
+  }
 });
 
 const text = out.join("\n");

@@ -18,3 +18,16 @@ export const SKILLS = skills;
 export const PROJECTS_DATA = [...projectsFile.projects].sort(
   (a, b) => a.portfolio_priority - b.portfolio_priority
 );
+
+// Case studies, keyed by project id (the file name is the project id).
+// An empty folder is fine: Vite returns an empty object.
+const caseStudyFiles = import.meta.glob("./profile/case-studies/*.json", {
+  eager: true,
+  import: "default",
+});
+export const CASE_STUDIES = Object.fromEntries(
+  Object.entries(caseStudyFiles).map(([path, data]) => [
+    path.split("/").pop().replace(/\.json$/, ""),
+    data,
+  ])
+);

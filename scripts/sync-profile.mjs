@@ -8,14 +8,18 @@
     PROFILE_DIR       path to a checkout of the profile repo (default ../professional-profile)
     PROFILE_RAW_BASE  raw GitHub base URL used when there is no local checkout
 */
-import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync,
+} from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DATA_OUT = join(ROOT, "src", "data", "profile");
+const CASE_OUT = join(DATA_OUT, "case-studies");
 const ASSETS_OUT = join(ROOT, "public", "profile");
 const FILES = ["profile.json", "education.json", "skills.json", "projects.json"];
+const SECTION_TYPES = ["text", "list", "steps", "metrics", "flow", "image"];
 
 const IN_CI = Boolean(process.env.CI);
 const LOCAL_DIR = resolve(ROOT, process.env.PROFILE_DIR || "../professional-profile");
@@ -29,6 +33,22 @@ const warn = (m) => console.warn(`[sync-profile] warn: ${m}`);
 const isUrl = (v) => typeof v === "string" && /^https?:\/\//.test(v);
 const dupes = (list) => list.filter((v, i) => list.indexOf(v) !== i);
 
+/* ---------- case study helpers ---------- */
+
+function caseStudyList(projectsFile) {
+  return (projectsFile.projects || [])
+    .filter((p) => p.case_study)
+    .map((p) => ({ id: p.id, path: p.case_study }));
+}
+
+// image paths inside assets/, for one case study
+function caseStudyAssets(cs) {
+  const files = [];
+  (cs.images || []).forEach((i) => i?.file && files.push(i.file));
+  (cs.sections || []).forEach((s) => s?.type === "image" && s.file && files.push(s.file));
+  return files.map((f) => `case-studies/${f}`);
+}
+
 /* ---------- sources ---------- */
 
 function loadLocal() {
@@ -38,13 +58,20 @@ function loadLocal() {
   const data = {};
   for (const f of FILES) data[f] = JSON.parse(readFileSync(join(dataDir, f), "utf8"));
 
+  const caseStudies = {};
+  for (const { id, path } of caseStudyList(data["projects.json"])) {
+    const file = join(dataDir, path);
+    if (!existsSync(file)) throw new Error(`project "${id}" points to data/${path}, which does not exist`);
+    caseStudies[id] = JSON.parse(readFileSync(file, "utf8"));
+  }
+
   const assetsDir = join(LOCAL_DIR, "assets");
   const copyAssets = async () => {
     rmSync(ASSETS_OUT, { recursive: true, force: true });
     if (existsSync(assetsDir)) cpSync(assetsDir, ASSETS_OUT, { recursive: true });
     else warn("the profile repo has no assets/ folder");
   };
-  return { label: `local checkout (${LOCAL_DIR})`, data, copyAssets };
+  return { label: `local checkout (${LOCAL_DIR})`, data, caseStudies, copyAssets };
 }
 
 async function get(url) {
@@ -58,16 +85,22 @@ async function loadRemote() {
     const data = {};
     for (const f of FILES) data[f] = await (await get(`${RAW_BASE}/data/${f}`)).json();
 
+    const caseStudies = {};
+    for (const { id, path } of caseStudyList(data["projects.json"])) {
+      caseStudies[id] = await (await get(`${RAW_BASE}/data/${path}`)).json();
+    }
+
     const copyAssets = async () => {
       rmSync(ASSETS_OUT, { recursive: true, force: true });
       const wanted = new Set();
-      const avatar = data["profile.json"].avatar?.file;
-      if (avatar) wanted.add(avatar);
-      const resume = data["profile.json"].resume?.file;
-      if (resume) wanted.add(resume);
+      const profile = data["profile.json"];
+      if (profile.avatar?.file) wanted.add(profile.avatar.file);
+      if (profile.resume?.file) wanted.add(profile.resume.file);
       for (const p of data["projects.json"].projects || []) {
         [p.image, ...(p.gallery || [])].filter(Boolean).forEach((f) => wanted.add(`projects/${f}`));
       }
+      Object.values(caseStudies).forEach((cs) => caseStudyAssets(cs).forEach((f) => wanted.add(f)));
+
       for (const rel of wanted) {
         try {
           const buf = Buffer.from(await (await get(`${RAW_BASE}/assets/${rel}`)).arrayBuffer());
@@ -79,7 +112,7 @@ async function loadRemote() {
         }
       }
     };
-    return { label: `GitHub raw (${RAW_BASE})`, data, copyAssets };
+    return { label: `GitHub raw (${RAW_BASE})`, data, caseStudies, copyAssets };
   } catch (e) {
     warn(`remote download failed: ${e.message}`);
     return null;
@@ -90,12 +123,32 @@ function loadCommitted() {
   if (!FILES.every((f) => existsSync(join(DATA_OUT, f)))) return null;
   const data = {};
   for (const f of FILES) data[f] = JSON.parse(readFileSync(join(DATA_OUT, f), "utf8"));
-  return { label: "committed copy in src/data/profile", data };
+  const caseStudies = {};
+  if (existsSync(CASE_OUT)) {
+    for (const f of readdirSync(CASE_OUT)) {
+      if (f.endsWith(".json")) caseStudies[f.slice(0, -5)] = JSON.parse(readFileSync(join(CASE_OUT, f), "utf8"));
+    }
+  }
+  return { label: "committed copy in src/data/profile", data, caseStudies };
 }
 
 /* ---------- validation ---------- */
 
-function validate(d) {
+function validateCaseStudy(id, cs) {
+  const e = [];
+  const w = `case study "${id}"`;
+  if (!cs?.summary) e.push(`${w}: missing "summary"`);
+  if (!Array.isArray(cs?.sections) || !cs.sections.length) {
+    e.push(`${w}: "sections" must be a non-empty array`);
+    return e;
+  }
+  cs.sections.forEach((s, i) => {
+    if (!SECTION_TYPES.includes(s?.type)) e.push(`${w}, section ${i + 1}: unknown type "${s?.type}"`);
+  });
+  return e;
+}
+
+function validate(d, caseStudies) {
   const e = [];
   const p = d["profile.json"] || {};
   const ed = d["education.json"] || {};
@@ -105,7 +158,7 @@ function validate(d) {
   for (const k of ["name", "display_name", "headline", "headline_long", "email", "links", "avatar"]) {
     if (!p[k]) e.push(`profile.json: missing "${k}"`);
   }
-  if (p.avatar && !p.avatar.file) e.push('profile.json: avatar.file is missing');
+  if (p.avatar && !p.avatar.file) e.push("profile.json: avatar.file is missing");
   for (const [k, v] of Object.entries(p.links || {})) {
     if (!isUrl(v)) e.push(`profile.json: links.${k} is not a URL`);
   }
@@ -113,7 +166,6 @@ function validate(d) {
   if (!Array.isArray(ed.education) || !ed.education.length) {
     e.push("education.json: 'education' must be a non-empty array");
   }
-
   if (!Array.isArray(sk.display_groups) || !sk.display_groups.length) {
     e.push("skills.json: 'display_groups' must be a non-empty array");
   }
@@ -135,6 +187,7 @@ function validate(d) {
           e.push(`project "${x.id}": links.${k} must be a URL or null`);
         }
       }
+      if (x.case_study) e.push(...validateCaseStudy(x.id, caseStudies[x.id]));
     }
   }
   return e;
@@ -154,7 +207,7 @@ async function main() {
     warn("using the committed copy; it may be out of date");
   }
 
-  const errors = validate(source.data);
+  const errors = validate(source.data, source.caseStudies);
   if (errors.length) throw new Error(`Invalid profile data:\n - ${errors.join("\n - ")}`);
 
   if (!fallback) {
@@ -162,9 +215,14 @@ async function main() {
     for (const f of FILES) {
       writeFileSync(join(DATA_OUT, f), JSON.stringify(source.data[f], null, 2) + "\n");
     }
+    rmSync(CASE_OUT, { recursive: true, force: true });
+    mkdirSync(CASE_OUT, { recursive: true });
+    for (const [id, cs] of Object.entries(source.caseStudies)) {
+      writeFileSync(join(CASE_OUT, `${id}.json`), JSON.stringify(cs, null, 2) + "\n");
+    }
     await source.copyAssets();
   }
-  log(`ok: loaded from ${source.label}`);
+  log(`ok: loaded from ${source.label} (${Object.keys(source.caseStudies).length} case study file(s))`);
 }
 
 main().catch((e) => {
