@@ -73,7 +73,8 @@ function Card({ variant, image, label }) {
 }
 
 function Folder({ project, fade, active, onOpen }) {
-  const { id, title, caption, category, cta, href, hasCaseStudy, images = [] } = project;
+    const { id, title, caption, category, cta, href, hasCaseStudy, detailKind, images = [] } = project;
+    const detailText = detailKind === "case_study" ? "Read case study" : "View details";
 
   const onArticleClick = hasCaseStudy
     ? (e) => {
@@ -106,7 +107,7 @@ function Folder({ project, fade, active, onOpen }) {
               type="button"
               className="folder__go"
               onClick={() => onOpen(id)}
-              aria-label={`Read case study: ${title}`}
+              aria-label={`${detailText}: ${title}`}
               aria-expanded={active}
               aria-controls="case-study"
             >
@@ -126,7 +127,7 @@ function Folder({ project, fade, active, onOpen }) {
         <p className="folder__caption">{caption}</p>
         {hasCaseStudy ? (
           <button type="button" className="folder__link" onClick={() => onOpen(id)}>
-            Read case study
+            {detailText}
             <Arrow size={14} />
           </button>
         ) : href ? (

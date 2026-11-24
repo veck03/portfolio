@@ -1,0 +1,172 @@
+{
+  "schema_version": 2,
+  "kind": "project",
+  "summary": "A web platform for exploring urban heat across Delhi. It combines satellite-derived land surface temperature at 30 m resolution with a trained model, so you can find hotspots and compare what-if cooling scenarios, such as more vegetation or less built-up surface.",
+  "stack": [
+    "Python",
+    "Google Earth Engine",
+    "Landsat 8 + Sentinel-2",
+    "XGBoost",
+    "Random Forest",
+    "FastAPI",
+    "PostGIS",
+    "React"
+  ],
+  "facts": [],
+  "images": [
+    {
+      "file": "urban-heat-mitigation/dashboard.webp",
+      "alt": "Urbivue overview dashboard",
+      "caption": "Overview of observed land surface temperature for a selected month"
+    },
+    {
+      "file": "urban-heat-mitigation/heatmap.webp",
+      "alt": "Observed heat map of Delhi"
+    }
+  ],
+  "note": null,
+  "sections": [
+    {
+      "type": "text",
+      "title": "The challenge",
+      "body": [
+        "Urbanization has replaced vegetation and water with heat-absorbing surfaces, intensifying the urban heat island effect. Ground stations and city-wide policies can't show how heat differs from one block to the next, or what would cool a specific place."
+      ]
+    },
+    {
+      "type": "pipeline",
+      "title": "How it works",
+      "nodes": [
+        {
+          "id": "sources",
+          "icon": "layers",
+          "title": "Satellite data",
+          "subtitle": "Landsat 8 and Sentinel-2 via Google Earth Engine, on a 30 m grid"
+        },
+        {
+          "id": "features",
+          "icon": "table",
+          "title": "Feature engineering",
+          "subtitle": "NDVI, NDBI, NDWI, EVI, elevation, distance to water, land cover"
+        },
+        {
+          "id": "db",
+          "icon": "database",
+          "title": "PostGIS database",
+          "subtitle": "Observed temperature per grid cell and month"
+        },
+        {
+          "id": "model",
+          "icon": "sparkle",
+          "title": "Heat model",
+          "subtitle": "Trained offline: Random Forest and XGBoost"
+        },
+        {
+          "id": "api",
+          "icon": "code",
+          "title": "FastAPI service",
+          "subtitle": "Serves observations and model estimates"
+        },
+        {
+          "id": "app",
+          "icon": "search",
+          "title": "React web app",
+          "subtitle": "Heat map, location search, scenarios, hotspot reports"
+        }
+      ],
+      "layers": [
+        [
+          "sources"
+        ],
+        [
+          "features"
+        ],
+        [
+          "db",
+          "model"
+        ],
+        [
+          "api"
+        ],
+        [
+          "app"
+        ]
+      ],
+      "routes": [
+        {
+          "label": "Observed heat",
+          "icon": "layers",
+          "paths": [
+            [
+              "sources",
+              "features",
+              "db",
+              "api",
+              "app"
+            ]
+          ],
+          "note": "The heat map shows stored satellite-derived observations, not predictions."
+        },
+        {
+          "label": "Cooling scenario",
+          "icon": "sparkle",
+          "paths": [
+            [
+              "db",
+              "api",
+              "app"
+            ],
+            [
+              "model",
+              "api"
+            ]
+          ],
+          "note": "A scenario changes inputs such as NDVI or tree cover and compares two model estimates. It is a what-if estimate, not a measurement."
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "title": "What the platform does",
+      "items": [
+        "Explore observed land surface temperature on a map, month by month.",
+        "Look up any location and see its temperature and environmental features.",
+        "Compare baseline and scenario estimates by changing NDVI, EVI, tree cover or built surface.",
+        "Rank the hottest cells and download a month's observations as CSV."
+      ]
+    },
+    {
+      "type": "metrics",
+      "title": "Model results",
+      "items": [
+        {
+          "value": "1.24 °C",
+          "label": "XGBoost RMSE"
+        },
+        {
+          "value": "0.898",
+          "label": "XGBoost R²"
+        },
+        {
+          "value": "1.42 °C",
+          "label": "Random Forest RMSE"
+        },
+        {
+          "value": "0.864",
+          "label": "Random Forest R²"
+        }
+      ],
+      "note": "Evaluated on held-out spatial blocks, so training and test areas do not overlap. Both models met the targets (RMSE of 1.5 °C or less, R² of 0.85 or more), and XGBoost scored better."
+    },
+    {
+      "type": "list",
+      "title": "Limits and next steps",
+      "items": [
+        "Scenario results are model estimates, not measurements or proof that an intervention causes cooling.",
+        "Not yet validated against ground-station data.",
+        "Planned: SHAP explanations for per-location drivers.",
+        "Planned: a cooling-optimization engine and more cities."
+      ]
+    }
+  ]
+}

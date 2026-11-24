@@ -84,6 +84,7 @@
         "live_demo": null
       },
       "featured": true,
+      "case_study": "case-studies/urban-heat-mitigation.json",
       "resume_priority": 3,
       "portfolio_priority": 3
     },

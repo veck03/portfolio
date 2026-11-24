@@ -19,7 +19,7 @@ const DATA_OUT = join(ROOT, "src", "data", "profile");
 const CASE_OUT = join(DATA_OUT, "case-studies");
 const ASSETS_OUT = join(ROOT, "public", "profile");
 const FILES = ["profile.json", "education.json", "skills.json", "projects.json"];
-const SECTION_TYPES = ["text", "list", "steps", "metrics", "flow", "image"];
+const SECTION_TYPES = ["text", "list", "steps", "metrics", "pipeline", "image"];
 
 const IN_CI = Boolean(process.env.CI);
 const LOCAL_DIR = resolve(ROOT, process.env.PROFILE_DIR || "../professional-profile");

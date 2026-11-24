@@ -49,11 +49,19 @@ function sectionLines(s) {
       (s.items || []).forEach((m) => lines.push(`${pad}- ${m.label}: ${m.value}`));
       if (s.note) lines.push(`${pad}Note: ${s.note}`);
       break;
-    case "flow":
-      (s.tabs || []).forEach((t) =>
-        lines.push(`${pad}${t.label}: ${(t.steps || []).map((st) => st.title).join(" -> ")}`)
+      case "pipeline": {
+      const byId = Object.fromEntries((s.nodes || []).map((n) => [n.id, n]));
+      (s.nodes || []).forEach((n) =>
+        lines.push(`${pad}- ${n.title}${n.subtitle ? `: ${n.subtitle}` : ""}`)
       );
+      (s.routes || []).forEach((r) => {
+        const paths = (r.paths || []).map((p) =>
+          p.map((id) => byId[id]?.title || id).join(" -> ")
+        );
+        lines.push(`${pad}${r.label}: ${paths.join(" | ")}${r.note ? `. ${r.note}` : ""}`);
+      });
       break;
+    }
     default:
       break;
   }
