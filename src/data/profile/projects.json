@@ -114,7 +114,7 @@
       "portfolio_description": "A full-stack real estate price prediction platform that estimates property values across Bangalore using machine learning. The application combines a Scikit-Learn Linear Regression model with a Python FastAPI backend and a responsive JavaScript frontend. Users can enter property details, including neighborhood, square footage, bedrooms, and bathrooms, to receive instant price estimates in Indian Lakhs (₹). The decoupled architecture separates frontend hosting on Vercel from backend inference on Render, enabling independent deployment and API-driven predictions.",
       "links": {
         "github": "https://github.com/veck03/Banglore_house_price_prediction",
-        "live_demo": "https://banglore-house-price-prediction-navy.vercel.app/"
+        "live_demo": null
       },
       "featured": false,
       "resume_priority": 4,

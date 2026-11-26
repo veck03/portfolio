@@ -73,21 +73,33 @@ function Card({ variant, image, label }) {
 }
 
 function Folder({ project, fade, active, onOpen }) {
-    const { id, title, caption, category, cta, href, hasCaseStudy, detailKind, images = [] } = project;
-    const detailText = detailKind === "case_study" ? "Read case study" : "View details";
+  const { id, title, caption, category, cta, href, hasCaseStudy, detailKind, images = [] } = project;
+  const detailText = detailKind === "case_study" ? "Read case study" : "View details";
+  const [hovered, setHovered] = useState(false);
+  const [suppressHover, setSuppressHover] = useState(false);
+
+  const toggleOpen = () => {
+    if (active) {
+      setSuppressHover(true);
+      setHovered(false);
+    }
+    onOpen(id);
+  };
 
   const onArticleClick = hasCaseStudy
     ? (e) => {
         // buttons and links handle their own clicks
-        if (!e.target.closest("a, button")) onOpen(id);
+        if (!e.target.closest("a, button")) toggleOpen();
       }
     : undefined;
 
   return (
     <motion.article
-      className={`folder${hasCaseStudy ? " folder--clickable" : ""}${active ? " folder--active" : ""}`}
+      className={`folder${hasCaseStudy ? " folder--clickable" : ""}${active ? " folder--active" : ""}${hovered && !suppressHover ? " folder--hovered" : ""}`}
       data-folder={id}
       onClick={onArticleClick}
+      onMouseEnter={() => { if (!suppressHover) setHovered(true); }}
+      onMouseLeave={() => { setHovered(false); setSuppressHover(false); }}
       {...fade}
     >
       <div className="folder__stage">
@@ -106,7 +118,7 @@ function Folder({ project, fade, active, onOpen }) {
             <button
               type="button"
               className="folder__go"
-              onClick={() => onOpen(id)}
+              onClick={toggleOpen}
               aria-label={`${detailText}: ${title}`}
               aria-expanded={active}
               aria-controls="case-study"
@@ -126,7 +138,7 @@ function Folder({ project, fade, active, onOpen }) {
       <div className="folder__meta">
         <p className="folder__caption">{caption}</p>
         {hasCaseStudy ? (
-          <button type="button" className="folder__link" onClick={() => onOpen(id)}>
+          <button type="button" className="folder__link" onClick={toggleOpen}>
             {detailText}
             <Arrow size={14} />
           </button>

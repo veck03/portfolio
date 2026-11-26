@@ -76,7 +76,7 @@ export default function About({ slotRef, stageRef, staticPortrait, portrait }) {
 
         <div className="about__meta">
           <p className="about__year">©{new Date().getFullYear()}</p>
-          <p className="about__tag">{"{{ /AI & MACHINE LEARNING }}"}</p>
+          <p className="about__tag">{"{{ /AI & FULL-STACK DEVELOPEMENT }}"}</p>
         </div>
       </div>
     </section>

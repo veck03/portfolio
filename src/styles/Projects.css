@@ -79,6 +79,7 @@
   justify-self: center;
   --p: 0; /* hover progress: 0 = closed, 1 = spread */
 }
+.folder--hovered,
 .folder--active { --p: 1; z-index: 3; }
 
 .folder__stage { position: relative; height: 96cqw; }

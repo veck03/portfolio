@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { TECH_STACK } from "../data/techStack";
+import { SKILLS } from "../data/profileData";
 import "../styles/TechStack.css";
 
 const EASE = [0.22, 1, 0.36, 1];
@@ -30,17 +31,17 @@ export default function TechStack() {
         </header>
 
         <div className="stack__grid">
-          {TECH_STACK.groups.map((group, i) => (
+          {(SKILLS.display_groups || []).map((group, i) => (
             <motion.article key={group.title} className="stack__col" {...fade(0.1 + i * 0.1)}>
               <h3 className="stack__col-title">{group.title}</h3>
               <p className="stack__col-blurb">{group.blurb}</p>
               <ul className="stack__chips">
                 {group.items.map((item) => (
                   <li
-                    key={item.name}
-                    className={`chip${item.featured ? " chip--featured" : ""}`}
+                    key={item}
+                    className={`chip${group.highlight?.includes(item) ? " chip--featured" : ""}`}
                   >
-                    {item.name}
+                    {item}
                   </li>
                 ))}
               </ul>
